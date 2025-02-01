@@ -12,8 +12,9 @@
 
 Adafruit_BME280 bme;
 
-unsigned long delayTime;
 
+//sets the delay on loop
+unsigned long delayTime = 1000;
 
 
 // Change this to true for CSV format or false for readable output
@@ -42,10 +43,6 @@ void setup() {
   
     Serial.println("-- Default Test --");
   }
-  
-
-  delayTime = 1000;
-
   
 }
 
