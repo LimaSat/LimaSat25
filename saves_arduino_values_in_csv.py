@@ -9,7 +9,7 @@ baudrate = 9600
 ser = serial.Serial(port, baudrate)
 
 
-folder_path = r"C:\\Users\Aluno\Documents\\cansat\\" # IMPORTANT: change this to the folder path where you want the file to go
+folder_path = r"C:\Users\Aluno\Documents\cansat" # IMPORTANT: change this to the folder path where you want the file to go
 
 os.makedirs(folder_path, exist_ok=True)  # I think it's suposed to check if the folder exists and create it if it doesn't
 

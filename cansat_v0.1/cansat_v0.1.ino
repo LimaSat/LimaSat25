@@ -27,12 +27,8 @@ void setup() {
   bool status;
   status = bme.begin();  //starts the bme280 sensor I think
 
-  // Print CSV header if csvMode is enabled
-  if (csvMode) {
-    Serial.print("Temperature,Pressure,Altitude,Humidity,UV,Time");
-  } //DO NOT FORGET THAT IF CSV MODE IS ENABLED IT DOESNT CHECK IF BME280 IS CONNECTED 
-
-  else {
+  // DO NOT FORGET THAT IF CSV MODE IS ENABLED IT DOESNT CHECK IF BME280 IS CONNECTED
+  if (!csvMode) {
     Serial.println(F("BME280 test"));
   
     //checks if bme280 sensor is well connected
@@ -43,7 +39,6 @@ void setup() {
   
     Serial.println("-- Default Test --");
   }
-  
 }
 
 
