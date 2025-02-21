@@ -1,12 +1,23 @@
 import serial
 import csv
 import os
+import time
 
 
 # IMPORTANT: Set the correct port where your Arduino is connected
 port = 'COM5'  # Update with your Arduino's port, it's easy to check on the arduino IDE
 baudrate = 9600
-ser = serial.Serial(port, baudrate)
+
+# Check if the Arduino is connected
+while True:
+    try:
+        ser = serial.Serial(port, baudrate)
+        break
+    except serial.SerialException:
+        print(f"Could not open port {port}. Please check if the Arduino is connected, the port is correct, and try reconnecting the Arduino.")
+    time.sleep(3)
+
+
 
 
 folder_path = r"C:\Users\Aluno\Documents\cansat" # IMPORTANT: change this to the folder path where you want the file to go
@@ -20,6 +31,8 @@ file_path = os.path.join(folder_path, file_name)
 
 #WARNING: if there is already a "file_name" file this will overwrite it,
 # if you got useful data don't forget to rename it before using this program again 
+
+
 
 # Open a csv or txt file to save the data
 with open(file_path, 'w', newline='') as file:
