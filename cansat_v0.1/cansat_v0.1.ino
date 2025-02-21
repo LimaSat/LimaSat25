@@ -31,11 +31,14 @@ void setup() {
   if (!csvMode) {
     Serial.println(F("BME280 test"));
   
+    
     //checks if bme280 sensor is well connected
-    if (!status) {
+    while(!status) {
       Serial.println("Could not find a valid BME280 sensor, check wiring!");
-      while (1);
+      status = bme.begin();
+      delay(delayTime);
     }
+
   
     Serial.println("-- Default Test --");
   }
@@ -64,14 +67,13 @@ void bmeValues() {
 
 
 //serial prints the values received from uv sensor
-void uvValues() {
-  float sensorUV = analogRead(A1) * 5000 / 1023.0;
+void uvValues(int pin) {
+  float sensorUV = analogRead(pin) * 5000 / 1023.0;
 
   if (csvMode) {
     Serial.print(sensorUV); Serial.print(",");
   } else {
     Serial.print("UV Sensor = "); Serial.print(sensorUV); Serial.println(" mV");
-    Serial.println();
   }
 }
 
@@ -80,8 +82,12 @@ void loop() {
   
   bmeValues();
 
-  uvValues();
+  uvValues(A0);
+  uvValues(A1);
+  uvValues(A2);
+  uvValues(A0);
   
+
   unsigned long time_ms = millis();
   
   if (csvMode) {

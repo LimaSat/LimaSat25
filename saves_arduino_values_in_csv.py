@@ -4,7 +4,7 @@ import os
 
 
 # IMPORTANT: Set the correct port where your Arduino is connected
-port = 'COM3'  # Update with your Arduino's port, it's easy to check on the arduino IDE
+port = 'COM5'  # Update with your Arduino's port, it's easy to check on the arduino IDE
 baudrate = 9600
 ser = serial.Serial(port, baudrate)
 
@@ -26,7 +26,7 @@ with open(file_path, 'w', newline='') as file:
     writer = csv.writer(file)
     
     # Write header if CSV
-    writer.writerow(['Temperature', 'Pressure', 'Altitude', 'Humidity', 'UV', 'Time'])
+    writer.writerow(['Temperature', 'Pressure', 'Altitude', 'Humidity', 'UV1', 'UV2', 'UV3', 'UV4', 'Time'])
 
     print("Reading from Arduino... Press Ctrl+C to stop.")
     
@@ -36,12 +36,8 @@ with open(file_path, 'w', newline='') as file:
             line = ser.readline().decode('utf-8').strip()
             print(line)  # Print the data to the console
             
-            # Check if the data is in CSV format or normal format
-            if line.startswith("Temperature") or line.startswith("UV Sensor"):
-                continue
-            else:
-                # Write the CSV data to file
-                writer.writerow(line.split(','))
+            # Write the data to the file
+            writer.writerow(line.split(','))
 
         except KeyboardInterrupt:
             print("Program interrupted. Exiting...")
