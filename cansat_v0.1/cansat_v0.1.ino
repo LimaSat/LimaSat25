@@ -25,7 +25,7 @@ void setup() {
   Serial.begin(9600);
 
   bool status;
-  status = bme.begin();  //starts the bme280 sensor I think
+  status = bme.begin();  // Initializes the BME280 sensor
 
   // DO NOT FORGET THAT IF CSV MODE IS ENABLED IT DOESNT CHECK IF BME280 IS CONNECTED
   if (!csvMode) {
@@ -42,6 +42,45 @@ void setup() {
   
     Serial.println("-- Default Test --");
   }
+}
+
+
+void loop() {
+  
+  bmeValues();
+
+  float sensorUVdata[4];
+
+  sensorUVdata[0] = uvValues(A0);
+  sensorUVdata[1] = uvValues(A1);
+  sensorUVdata[2] = uvValues(A2);
+  sensorUVdata[3] = uvValues(A3);
+
+  float maxUV = -100;
+
+  for(int i = 0; i < 4; i++){
+    if (sensorUVdata[i] > maxUV){
+      maxUV = sensorUVdata[i];
+    }
+  }
+  
+  if (csvMode) {
+    Serial.print(maxUV); Serial.print(",");
+  } else {
+    Serial.print("Max UV Sensor = "); Serial.print(maxUV); Serial.println(" mV");
+  }
+
+  unsigned long time_ms = millis();
+  
+  if (csvMode) {
+    Serial.println(time_ms); // Last value with newline in csv file
+  } 
+  else {
+    Serial.print("Time = "); Serial.print(time_ms); Serial.println(" ms");
+    Serial.println();
+  }
+  
+  delay(delayTime); 
 }
 
 
@@ -67,36 +106,16 @@ void bmeValues() {
 
 
 //serial prints the values received from uv sensor
-void uvValues(int pin) {
-  float sensorUV = analogRead(pin) * 5000 / 1023.0;
+float uvValues(int pin) {
+  float sensorUV = (float)analogRead(pin) * 5000 / 1023.0;
 
   if (csvMode) {
     Serial.print(sensorUV); Serial.print(",");
   } else {
     Serial.print("UV Sensor = "); Serial.print(sensorUV); Serial.println(" mV");
   }
+  return sensorUV;
 }
 
 
-void loop() {
-  
-  bmeValues();
 
-  uvValues(A0);
-  uvValues(A1);
-  uvValues(A2);
-  uvValues(A0);
-  
-
-  unsigned long time_ms = millis();
-  
-  if (csvMode) {
-    Serial.println(time_ms); // Last value with newline in csv file
-  } 
-  else {
-    Serial.print("Time = "); Serial.print(time_ms); Serial.println(" ms");
-    Serial.println();
-  }
-  
-  delay(delayTime); 
-}

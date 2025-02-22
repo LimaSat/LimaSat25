@@ -5,7 +5,7 @@ import time
 
 
 # IMPORTANT: Set the correct port where your Arduino is connected
-port = 'COM5'  # Update with your Arduino's port, it's easy to check on the arduino IDE
+port = 'COM6'  # Update with your Arduino's port, it's easy to check on the arduino IDE
 baudrate = 9600
 
 # Check if the Arduino is connected
@@ -34,12 +34,13 @@ file_path = os.path.join(folder_path, file_name)
 
 
 
-# Open a csv or txt file to save the data
+# Open a csv file to save the data
 with open(file_path, 'w', newline='') as file:
     writer = csv.writer(file)
     
-    # Write header if CSV
-    writer.writerow(['Temperature', 'Pressure', 'Altitude', 'Humidity', 'UV1', 'UV2', 'UV3', 'UV4', 'Time'])
+    # Write header in csv file
+    writer.writerow(['Temperature', 'Pressure', 'Altitude', 'Humidity', 'UV1', 'UV2', 'UV3', 'UV4', 'MaxUV', 'Time'])
+    print('Temperature', 'Pressure', 'Altitude', 'Humidity', 'UV1', 'UV2', 'UV3', 'UV4', 'MaxUV', 'Time')
 
     print("Reading from Arduino... Press Ctrl+C to stop.")
     
