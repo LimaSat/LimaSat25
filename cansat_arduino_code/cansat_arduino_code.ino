@@ -3,7 +3,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 #include <SD.h>
-#include <SPI.h>
+
 
 #define BME_SCK 13
 #define BME_MISO 12
@@ -25,8 +25,11 @@ unsigned long delayTime = 1000;
 // Change this to true for CSV format or false for readable output
 bool csvMode = true;
 
-// Change this to true if using SD Card
+// Change this to true if you want to save the data to an SD Card 
 bool sdCard = true;
+
+// This is the name of the file that will be created if sdCard = True
+String fileName = "sensores.csv";
 
 void setup() {
   Serial.begin(9600);
@@ -34,25 +37,38 @@ void setup() {
   if (sdCard){
     // Initializes the sd card module
     pinMode(CS_PIN, OUTPUT);
-    SD.begin();
+    SD.begin(CS_PIN);
+    // Checks if the SD card was initialized and stops the program if not
+    if (!SD.begin(CS_PIN)) {
+      Serial.println("SD Card initialization failed!");
+      while(1);
+    }
     
     // creates/opens a file in the sd card
-    file = SD.open("sensor_data_sd.txt", FILE_WRITE);
-    file.println("Temperature, Pressure, Altitude, Humidity, UV1, UV2, UV3, UV4, MaxUV, Time");
+    file = SD.open(fileName, FILE_WRITE);
+    // Checks if the file was created and stops the program if not
+    if (file) {
+      file.println("Temperature, Pressure, Altitude, Humidity, UV1, UV2, UV3, UV4, MaxUV, Time");
+    }
+    else {
+        Serial.println("no file");
+        while(1);
+    }
 
     // Closes the file to prevent data corruption
     file.close();
   }
-  
+
+  // Initializes the BME280 sensor
   bool status;
-  status = bme.begin();  // Initializes the BME280 sensor
+  status = bme.begin();  
 
   // DO NOT FORGET THAT IF CSV MODE IS ENABLED IT DOESNT CHECK IF BME280 IS CONNECTED
   if (!csvMode) {
     Serial.println(F("BME280 test"));
   
     
-    //checks if bme280 sensor is well connected
+    // Checks if bme280 sensor is well connected
     while(!status) {
       Serial.println("Could not find a valid BME280 sensor, check wiring!");
       status = bme.begin();
@@ -69,6 +85,7 @@ void loop() {
   
   bmeValues();
 
+  // Saves the UV sensor data to an array 
   float sensorUVdata[4];
 
   sensorUVdata[0] = uvValues(A0);
@@ -89,7 +106,7 @@ void loop() {
 
   // Writes the max value from the UV sensors if working with the sd card
   if (sdCard) {
-    file = SD.open("sensor_data_sd.txt", FILE_WRITE);
+    file = SD.open(fileName, FILE_WRITE);
     file.print(maxUV);file.print(",");
     file.close();
   }
@@ -102,13 +119,13 @@ void loop() {
     Serial.print("Max UV Sensor = "); Serial.print(maxUV); Serial.println(" mV");
   }
 
-
+  
   unsigned long time_ms = millis();
   
   // Writes the time to the sd card
   if (sdCard) {
-    file = SD.open("sensor_data_sd.txt", FILE_WRITE);
-    file.println(time_ms);file.print(",");
+    file = SD.open(fileName, FILE_WRITE);
+    file.print(time_ms);file.println(",");
     file.close();
   }
   
@@ -135,7 +152,7 @@ void bmeValues() {
   float humidity = bme.readHumidity();
 
   if (sdCard){
-    file = SD.open("sensor_data_sd.txt", FILE_WRITE);
+    file = SD.open(fileName, FILE_WRITE);
     file.print(temperature); file.print(",");
     file.print(pressure); file.print(",");
     file.print(altitude); file.print(",");
@@ -163,7 +180,7 @@ float uvValues(int pin) {
   float sensorUV = (float)analogRead(pin) * 5000 / 1023.0;
   
   if (sdCard){
-    file = SD.open("sensor_data_sd.txt", FILE_WRITE);
+    file = SD.open(fileName, FILE_WRITE);
     file.print(sensorUV); file.print(",");
     file.close();
   }
