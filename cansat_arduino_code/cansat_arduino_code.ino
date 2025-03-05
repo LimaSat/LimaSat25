@@ -48,7 +48,7 @@ void setup() {
     file = SD.open(fileName, FILE_WRITE);
     // Checks if the file was created and stops the program if not
     if (file) {
-      file.println("Temperature, Pressure, Altitude, Humidity, UV1, UV2, UV3, UV4, MaxUV, Time");
+      file.println("Temperature, Pressure, Altitude, UV1, UV2, UV3, UV4, MaxUV, Time");
     }
     else {
         Serial.println("no file");
@@ -149,14 +149,12 @@ void bmeValues() {
   float temperature = bme.readTemperature();
   float pressure = bme.readPressure() / 100.0F;
   float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
-  float humidity = bme.readHumidity();
 
   if (sdCard){
     file = SD.open(fileName, FILE_WRITE);
     file.print(temperature); file.print(",");
     file.print(pressure); file.print(",");
     file.print(altitude); file.print(",");
-    file.print(humidity); file.print(",");
     file.close();
   }
 
@@ -164,13 +162,11 @@ void bmeValues() {
     Serial.print(temperature); Serial.print(",");
     Serial.print(pressure); Serial.print(",");
     Serial.print(altitude); Serial.print(",");
-    Serial.print(humidity); Serial.print(",");
   } 
   else {
     Serial.print("Temperature = "); Serial.print(temperature); Serial.println(" *C");
     Serial.print("Pressure = "); Serial.print(pressure); Serial.println(" hPa");
     Serial.print("Approx. Altitude = "); Serial.print(altitude); Serial.println(" m");
-    Serial.print("Humidity = "); Serial.print(humidity); Serial.println(" %");
   }
 }
 
