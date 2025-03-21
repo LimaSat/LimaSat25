@@ -33,6 +33,10 @@ String fileName = "sensores.csv";
 
 void setup() {
   Serial.begin(9600);
+  delay(2000);
+
+  // Prepare to send data
+  Wire.begin();
 
   if (sdCard){
     // Initializes the sd card module
@@ -139,7 +143,6 @@ void loop() {
     Serial.println();
   }
 
-  
   delay(delayTime); 
 }
 
