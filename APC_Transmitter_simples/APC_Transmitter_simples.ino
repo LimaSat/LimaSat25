@@ -15,7 +15,7 @@ void loop() {
     
     float sensorUV = (float)analogRead(A1) * 5000 / 1023.0;
     float tempo = millis();
-    Serial.print(sensorUV); Serial.print(","); Serial.print(tempo); Serial.print(","); 
-    Serial.println("Sending data...");
+    Serial.print(sensorUV); Serial.print(","); Serial.print(tempo); 
+    Serial.print("\n"); 
     delay(1000); // Send data every second
 }

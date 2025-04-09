@@ -3,7 +3,7 @@ import matplotlib.animation as animation
 import pandas as pd
 
 #Nome do ficheiro de dados a ser utilizado
-ficheiro_txt = r"C:\Users\Utilizador\Desktop\CanSat\LimaSat25\dados-gráfico\dados2"
+ficheiro_txt = r"C:\Users\Aluno\Documents\GitHub\LimaSat25\dados-gráfico\dados2"
 
 
 # Criar a figura do gráfico
@@ -31,7 +31,7 @@ def atualizar(frame):
     ax.plot(x_data, y_data, marker="o", linestyle="-", color="b")
     ax.set_title("Gráfico Atualizado em Tempo Real")
     ax.set_xlabel("Tempo")
-    ax.set_ylabel("Temparatura")
+    ax.set_ylabel("sensor UV")
     ax.grid(True)
 
 #Criar a animação que atualiza o gráafico a cada segundo
