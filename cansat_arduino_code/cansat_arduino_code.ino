@@ -26,7 +26,7 @@ unsigned long delayTime = 1000;
 bool csvMode = true;
 
 // Change this to true if you want to save the data to an SD Card 
-bool sdCard = true;
+bool sdCard = false;
 
 // This is the name of the file that will be created if sdCard = True
 String fileName = "sensores.csv";
@@ -145,7 +145,7 @@ void loop() {
 
   delay(delayTime); 
 }
-
+// End of loop
 
 // Writes to sd card and serial prints the values received from bme280
 void bmeValues() {
@@ -177,7 +177,6 @@ void bmeValues() {
 // Writes to sd card and serial prints the values received from uv sensor
 float uvValues(int pin) {
   float sensorUV = (float)analogRead(pin) * 5000 / 1023.0;
-  
   if (sdCard){
     file = SD.open(fileName, FILE_WRITE);
     file.print(sensorUV); file.print(",");
