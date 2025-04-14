@@ -38,6 +38,12 @@ void setup() {
   // Prepare to send data
   Wire.begin();
 
+  // uv sensors
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+  pinMode(A3, INPUT);
+
   if (sdCard){
     // Initializes the sd card module
     pinMode(CS_PIN, OUTPUT);
@@ -82,6 +88,7 @@ void setup() {
   
     Serial.println("-- Default Test --");
   }
+
 }
 
 
@@ -145,7 +152,7 @@ void loop() {
 
   delay(delayTime); 
 }
-
+// End of loop
 
 // Writes to sd card and serial prints the values received from bme280
 void bmeValues() {
@@ -177,7 +184,6 @@ void bmeValues() {
 // Writes to sd card and serial prints the values received from uv sensor
 float uvValues(int pin) {
   float sensorUV = (float)analogRead(pin) * 5000 / 1023.0;
-  
   if (sdCard){
     file = SD.open(fileName, FILE_WRITE);
     file.print(sensorUV); file.print(",");

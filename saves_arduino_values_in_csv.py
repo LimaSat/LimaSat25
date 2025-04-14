@@ -5,7 +5,7 @@ import time
 
 
 # IMPORTANT: Set the correct port where your Arduino is connected
-port = 'COM6'  # Update with your Arduino's port, it's easy to check on the arduino IDE
+port = 'COM11'  # Update with your Arduino's port, it's easy to check on the arduino IDE
 baudrate = 9600
 
 # Check if the Arduino is connected
