@@ -26,7 +26,7 @@ unsigned long delayTime = 1000;
 bool csvMode = true;
 
 // Change this to true if you want to save the data to an SD Card 
-bool sdCard = false;
+bool sdCard = true;
 
 // This is the name of the file that will be created if sdCard = True
 String fileName = "sensores.csv";
@@ -37,6 +37,12 @@ void setup() {
 
   // Prepare to send data
   Wire.begin();
+
+  // uv sensors
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+  pinMode(A3, INPUT);
 
   if (sdCard){
     // Initializes the sd card module
@@ -82,6 +88,7 @@ void setup() {
   
     Serial.println("-- Default Test --");
   }
+
 }
 
 

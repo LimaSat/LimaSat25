@@ -3,7 +3,7 @@ import matplotlib.animation as animation
 import pandas as pd
 
 #Nome do ficheiro de dados a ser utilizado
-ficheiro_txt = r"C:\Users\Aluno\Documents\GitHub\LimaSat25\dados-gráfico\dados2"
+ficheiro_txt = r"./dados.txt"
 
 
 # Criar a figura do gráfico
