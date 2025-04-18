@@ -44,3 +44,6 @@ void loop() {
     // If the checksum does not match, do nothing (just ignore bad data)
   }
 }
+
+
+// Code developed with assistance from ChatGPT (OpenAI), April 2025
