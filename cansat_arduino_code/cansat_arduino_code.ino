@@ -150,6 +150,7 @@ void loop() {
     Serial.println();
   }
 
+
   delay(delayTime); 
 }
 // End of loop
