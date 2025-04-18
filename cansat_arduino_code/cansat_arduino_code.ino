@@ -132,8 +132,23 @@ void loop() {
   
 
   // Prints to serial monitor the time
-  Serial.println(time_ms); // Last value with newline in file
+  Serial.print(time_ms); // Last value with newline in file
 
+  // CheckSum
+  
+  float data[] = {temperature, pressure, altitude,  sensorUVdata[0], sensorUVdata[1], sensorUVdata[2], sensorUVdata[3], maxUV, time_ms};
+  int size = sizeof(data) / sizeof(data[0]);  // Calculate number of elements in the array
+
+  unsigned long sum = 0;  // Variable to hold the total sum
+
+  for (int i = 0; i < size; i++) {
+    sum += (unsigned long)(data[i] * 100); // Multiply each value by 100 to preserve 2 decimal places, then convert to integer
+  }
+
+  byte checksum = sum % 256;  // Compute 1-byte checksum (modulo 256)
+
+  Serial.println(checksum);
+  
 
 
   delay(delayTime); 
