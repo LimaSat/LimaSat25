@@ -22,9 +22,6 @@ File file;
 unsigned long delayTime = 700;
 
 
-// Change this to true for CSV format or false for readable output
-bool csvMode = true;
-
 // Change this to true if you want to save the data to an SD Card 
 bool sdCard = true;
 
@@ -73,22 +70,6 @@ void setup() {
   bool status;
   status = bme.begin();  
 
-  // DO NOT FORGET THAT IF CSV MODE IS ENABLED IT DOESNT CHECK IF BME280 IS CONNECTED
-  if (!csvMode) {
-    Serial.println(F("BME280 test"));
-  
-    
-    // Checks if bme280 sensor is well connected
-    while(!status) {
-      Serial.println("Could not find a valid BME280 sensor, check wiring!");
-      status = bme.begin();
-      delay(delayTime);
-    }
-
-  
-    Serial.println("-- Default Test --");
-  }
-
 }
 
 
@@ -123,12 +104,9 @@ void loop() {
   }
 
   // Prints to serial monitor the max value from the UV sensors
-  if (csvMode) {
-    Serial.print(maxUV); Serial.print(",");
-  } 
-  else {
-    Serial.print("Max UV Sensor = "); Serial.print(maxUV); Serial.println(" mV");
-  }
+
+  Serial.print(maxUV); Serial.print(",");
+
 
   
   unsigned long time_ms = millis();
@@ -142,13 +120,8 @@ void loop() {
   
 
   // Prints to serial monitor the time
-  if (csvMode) {
-    Serial.println(time_ms); // Last value with newline in csv file
-  } 
-  else {
-    Serial.print("Time = "); Serial.print(time_ms); Serial.println(" ms");
-    Serial.println();
-  }
+  Serial.println(time_ms); // Last value with newline in file
+
 
 
   delay(delayTime); 
@@ -169,16 +142,11 @@ void bmeValues() {
     file.close();
   }
 
-  if (csvMode) {
-    Serial.print(temperature); Serial.print(",");
-    Serial.print(pressure); Serial.print(",");
-    Serial.print(altitude); Serial.print(",");
-  } 
-  else {
-    Serial.print("Temperature = "); Serial.print(temperature); Serial.println(" *C");
-    Serial.print("Pressure = "); Serial.print(pressure); Serial.println(" hPa");
-    Serial.print("Approx. Altitude = "); Serial.print(altitude); Serial.println(" m");
-  }
+
+  Serial.print(temperature); Serial.print(",");
+  Serial.print(pressure); Serial.print(",");
+  Serial.print(altitude); Serial.print(",");
+
 }
 
 
@@ -191,12 +159,9 @@ float uvValues(int pin) {
     file.close();
   }
 
-  if (csvMode) {
-    Serial.print(sensorUV); Serial.print(",");
-  } 
-  else {
-    Serial.print("UV Sensor = "); Serial.print(sensorUV); Serial.println(" mV");
-  }
+
+  Serial.print(sensorUV); Serial.print(",");
+
   return sensorUV;
 }
 
