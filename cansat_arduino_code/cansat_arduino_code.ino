@@ -19,7 +19,7 @@ int CS_PIN = 10;
 File file;
 
 //sets the delay on loop
-unsigned long delayTime = 1000;
+unsigned long delayTime = 700;
 
 
 // Change this to true for CSV format or false for readable output
