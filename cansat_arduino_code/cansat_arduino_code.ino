@@ -19,7 +19,7 @@ int CS_PIN = 10;
 File file;
 
 //sets the delay on loop
-unsigned long delayTime = 1000;
+unsigned long delayTime = 700;
 
 
 // Change this to true if you want to save the data to an SD Card 
@@ -133,6 +133,7 @@ void loop() {
 
   // Prints to serial monitor the time
   Serial.println(time_ms); // Last value with newline in file
+
 
 
   delay(delayTime); 
