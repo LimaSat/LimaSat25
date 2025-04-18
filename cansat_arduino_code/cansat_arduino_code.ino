@@ -28,6 +28,14 @@ bool sdCard = true;
 // This is the name of the file that will be created if sdCard = True
 String fileName = "sensores.csv";
 
+
+struct BMEData {
+  float temperature;
+  float pressure;
+  float altitude;
+};
+
+
 void setup() {
   Serial.begin(9600);
   delay(2000);
@@ -75,7 +83,11 @@ void setup() {
 
 void loop() {
   
-  bmeValues();
+  BMEData bmeData = bmeValues();
+
+  float temperature = bmeData.temperature;
+  float pressure = bmeData.pressure;
+  float altitude = bmeData.altitude;
 
   // Saves the UV sensor data to an array 
   float sensorUVdata[4];
@@ -128,25 +140,27 @@ void loop() {
 // End of loop
 
 // Writes to sd card and serial prints the values received from bme280
-void bmeValues() {
-  float temperature = bme.readTemperature();
-  float pressure = bme.readPressure() / 100.0F;
-  float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+BMEData bmeValues() {
+  BMEData data;
+  data.temperature = bme.readTemperature();
+  data.pressure = bme.readPressure() / 100.0F;
+  data.altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
 
   if (sdCard){
     file = SD.open(fileName, FILE_WRITE);
-    file.print(temperature); file.print(",");
-    file.print(pressure); file.print(",");
-    file.print(altitude); file.print(",");
+    file.print(data.temperature); file.print(",");
+    file.print(data.pressure); file.print(",");
+    file.print(data.altitude); file.print(",");
     file.close();
   }
 
+  Serial.print(data.temperature); Serial.print(",");
+  Serial.print(data.pressure); Serial.print(",");
+  Serial.print(data.altitude); Serial.print(",");
 
-  Serial.print(temperature); Serial.print(",");
-  Serial.print(pressure); Serial.print(",");
-  Serial.print(altitude); Serial.print(",");
-
+  return data;
 }
+
 
 
 // Writes to sd card and serial prints the values received from uv sensor
