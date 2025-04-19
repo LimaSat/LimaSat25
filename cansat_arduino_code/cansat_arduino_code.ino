@@ -43,7 +43,7 @@ void setup() {
   // Prepare to send data
   Wire.begin();
 
-  // uv sensors
+  // configure the analog pins for the uv sensors
   pinMode(A0, INPUT);
   pinMode(A1, INPUT);
   pinMode(A2, INPUT);
@@ -63,7 +63,7 @@ void setup() {
     file = SD.open(fileName, FILE_WRITE);
     // Checks if the file was created and stops the program if not
     if (file) {
-      file.println("Temperature, Pressure, Altitude, UV1, UV2, UV3, UV4, MaxUV, Time");
+      file.println("Temperature, Pressure, Altitude, UV1, UV2, UV3, UV4, MaxUV, Time"); // Header for the csv file
     }
     else {
         Serial.println("no file");
@@ -76,18 +76,25 @@ void setup() {
 
   // Initializes the BME280 sensor
   bool status;
-  status = bme.begin();  
+  status = bme.begin();
+
+  if (!status) {
+    Serial.println("BME initialization failed, check wiring!");
+    while(1);
+  }
 
 }
 
 
 void loop() {
   
+  // Saves the BME sensor data
   BMEData bmeData = bmeValues();
 
   float temperature = bmeData.temperature;
   float pressure = bmeData.pressure;
   float altitude = bmeData.altitude;
+
 
   // Saves the UV sensor data to an array 
   float sensorUVdata[4];
@@ -105,37 +112,13 @@ void loop() {
       maxUV = sensorUVdata[i];
     }
   }
-  
 
-
-  // Writes the max value from the UV sensors if working with the sd card
-  if (sdCard) {
-    file = SD.open(fileName, FILE_WRITE);
-    file.print(maxUV);file.print(",");
-    file.close();
-  }
-
-  // Prints to serial monitor the max value from the UV sensors
-
-  Serial.print(maxUV); Serial.print(",");
-
-
-  
+  // Time in milliseconds
   unsigned long time_ms = millis();
-  
-  // Writes the time to the sd card
-  if (sdCard) {
-    file = SD.open(fileName, FILE_WRITE);
-    file.print(time_ms);file.println(",");
-    file.close();
-  }
-  
 
-  // Prints to serial monitor the time
-  Serial.print(time_ms); // Last value with newline in file
 
   // CheckSum
-  
+
   float data[] = {temperature, pressure, altitude,  sensorUVdata[0], sensorUVdata[1], sensorUVdata[2], sensorUVdata[3], maxUV, time_ms};
   int size = sizeof(data) / sizeof(data[0]);  // Calculate number of elements in the array
 
@@ -147,49 +130,63 @@ void loop() {
 
   byte checksum = sum % 256;  // Compute 1-byte checksum (modulo 256)
 
+  // Sending data to APC220
+  Serial.print(temperature); Serial.print(",");
+  Serial.print(pressure); Serial.print(",");
+  Serial.print(altitude); Serial.print(",");
+
+  Serial.print(sensorUVdata[0]); Serial.print(",");
+  Serial.print(sensorUVdata[1]); Serial.print(",");
+  Serial.print(sensorUVdata[2]); Serial.print(",");
+  Serial.print(sensorUVdata[3]); Serial.print(",");
+  
+  Serial.print(maxUV); Serial.print(",");
+
+  Serial.print(time_ms); Serial.print(",");
+
   Serial.println(checksum);
   
+
+  // Write to SD card
+  if (sdCard) {
+    file = SD.open(fileName, FILE_WRITE);
+
+    file.print(temperature); file.print(",");
+    file.print(pressure); file.print(",");
+    file.print(altitude); file.print(",");
+
+    file.print(sensorUVdata[0]); file.print(",");
+    file.print(sensorUVdata[1]); file.print(",");
+    file.print(sensorUVdata[2]); file.print(",");
+    file.print(sensorUVdata[3]); file.print(",");
+  
+    file.print(maxUV); file.print(",");
+
+    file.println(time_ms);
+
+    file.close();
+  }
 
 
   delay(delayTime); 
 }
 // End of loop
 
-// Writes to sd card and serial prints the values received from bme280
+
+// Returns the values received from the bme280
 BMEData bmeValues() {
   BMEData data;
   data.temperature = bme.readTemperature();
   data.pressure = bme.readPressure() / 100.0F;
   data.altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
 
-  if (sdCard){
-    file = SD.open(fileName, FILE_WRITE);
-    file.print(data.temperature); file.print(",");
-    file.print(data.pressure); file.print(",");
-    file.print(data.altitude); file.print(",");
-    file.close();
-  }
-
-  Serial.print(data.temperature); Serial.print(",");
-  Serial.print(data.pressure); Serial.print(",");
-  Serial.print(data.altitude); Serial.print(",");
-
   return data;
 }
 
 
-
-// Writes to sd card and serial prints the values received from uv sensor
+// Returns the values received from a uv sensor
 float uvValues(int pin) {
   float sensorUV = (float)analogRead(pin) * 5000 / 1023.0;
-  if (sdCard){
-    file = SD.open(fileName, FILE_WRITE);
-    file.print(sensorUV); file.print(",");
-    file.close();
-  }
-
-
-  Serial.print(sensorUV); Serial.print(",");
 
   return sensorUV;
 }
