@@ -23,7 +23,7 @@ unsigned long delayTime = 700;
 
 
 // Change this to true if you want to save the data to an SD Card 
-bool sdCard = true;
+bool sdCard = false;
 
 // This is the name of the file that will be created if sdCard = True
 String fileName = "sensores.csv";
@@ -130,43 +130,31 @@ void loop() {
 
   byte checksum = sum % 256;  // Compute 1-byte checksum (modulo 256)
 
+
+
+  String data_values = String(temperature) + "," +
+  String(pressure) + "," +
+  String(altitude) + "," +
+  String(sensorUVdata[0]) + "," +
+  String(sensorUVdata[1]) + "," +
+  String(sensorUVdata[2]) + "," +
+  String(sensorUVdata[3]) + "," +
+  String(maxUV) + "," +
+  String(time_ms) + "," +
+  String(checksum);
+
   // Sending data to APC220
-  Serial.print(temperature); Serial.print(",");
-  Serial.print(pressure); Serial.print(",");
-  Serial.print(altitude); Serial.print(",");
-
-  Serial.print(sensorUVdata[0]); Serial.print(",");
-  Serial.print(sensorUVdata[1]); Serial.print(",");
-  Serial.print(sensorUVdata[2]); Serial.print(",");
-  Serial.print(sensorUVdata[3]); Serial.print(",");
+  Serial.println(data_values);
   
-  Serial.print(maxUV); Serial.print(",");
-
-  Serial.print(time_ms); Serial.print(",");
-
-  Serial.println(checksum);
   
-
   // Write to SD card
   if (sdCard) {
     file = SD.open(fileName, FILE_WRITE);
 
-    file.print(temperature); file.print(",");
-    file.print(pressure); file.print(",");
-    file.print(altitude); file.print(",");
-
-    file.print(sensorUVdata[0]); file.print(",");
-    file.print(sensorUVdata[1]); file.print(",");
-    file.print(sensorUVdata[2]); file.print(",");
-    file.print(sensorUVdata[3]); file.print(",");
-  
-    file.print(maxUV); file.print(",");
-
-    file.println(time_ms);
+    file.println(data_values);
 
     file.close();
   }
-
 
   delay(delayTime); 
 }
