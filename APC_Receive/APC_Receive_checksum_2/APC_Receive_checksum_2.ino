@@ -50,14 +50,15 @@ void parseLine(String line) {
   }
   byte calculatedChecksum = sum % 256;
 
+   for (int i = 0; i < NUM_VALUES; i++) {
+      Serial.print(receivedValues[i], 2);
+      if (i < NUM_VALUES ) Serial.print(",");
+    }
+
   if (calculatedChecksum == receivedChecksum) {
     // Print values
-    for (int i = 0; i < NUM_VALUES; i++) {
-      Serial.print(receivedValues[i], 2);
-      if (i < NUM_VALUES - 1) Serial.print(",");
-    }
-    Serial.println();
+    Serial.println("V");
   } else {
-    Serial.println("Checksum mismatch.");
+    Serial.println("F");
   }
 }
