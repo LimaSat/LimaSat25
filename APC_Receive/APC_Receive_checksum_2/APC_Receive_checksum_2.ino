@@ -1,4 +1,4 @@
-const int NUM_VALUES = 9;
+const int NUM_VALUES = 10;
 float receivedValues[NUM_VALUES];
 byte receivedChecksum;
 
@@ -44,10 +44,8 @@ void parseLine(String line) {
   }
 
   // Recalculate checksum
-  unsigned long sum = 0;
-  for (int i = 0; i < NUM_VALUES; i++) {
-    sum += (unsigned long)(receivedValues[i] * 100);
-  }
+  
+  unsigned long sum = receivedValues[9];
   byte calculatedChecksum = sum % 256;
 
    for (int i = 0; i < NUM_VALUES; i++) {
@@ -55,12 +53,12 @@ void parseLine(String line) {
       if (i < NUM_VALUES ) Serial.print(",");
     }
 
+  Serial.print(calculatedChecksum);
   if (calculatedChecksum == receivedChecksum) {
     // Print values
-    Serial.print(calculatedChecksum);
+    
     Serial.println("V");
   } else {
-    Serial.print(calculatedChecksum);
     Serial.println("F");
   }
 }

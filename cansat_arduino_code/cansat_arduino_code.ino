@@ -3,6 +3,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 #include <SD.h>
+#include <math.h>
 
 
 #define BME_SCK 13
@@ -122,13 +123,14 @@ void loop() {
   float data[] = {temperature, pressure, altitude,  sensorUVdata[0], sensorUVdata[1], sensorUVdata[2], sensorUVdata[3], maxUV, time_ms};
   int size = sizeof(data) / sizeof(data[0]);  // Calculate number of elements in the array
 
-  unsigned long sum = 0;  // Variable to hold the total sum
+  float sum = 0;  // Variable to hold the total sum
 
   for (int i = 0; i < size; i++) {
-    sum += (unsigned long)(data[i] * 100); // Multiply each value by 100 to preserve 2 decimal places, then convert to integer
+    sum += data[i]; // Multiply each value by 100 to preserve 2 decimal places, then convert to integer
   }
-
-  byte checksum = sum % 256;  // Compute 1-byte checksum (modulo 256)
+  sum *=100;
+  unsigned long sum2 = round(sum);
+  byte checksum = sum2 % 256;  // Compute 1-byte checksum (modulo 256)
 
 
 
@@ -141,6 +143,7 @@ void loop() {
   String(sensorUVdata[3]) + "," +
   String(maxUV) + "," +
   String(time_ms) + "," +
+  String(sum2) + ","+
   String(checksum);
 
   // Sending data to APC220
