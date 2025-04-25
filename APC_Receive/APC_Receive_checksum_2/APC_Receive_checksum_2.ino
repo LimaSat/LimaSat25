@@ -57,8 +57,10 @@ void parseLine(String line) {
 
   if (calculatedChecksum == receivedChecksum) {
     // Print values
+    Serial.print(calculatedChecksum);
     Serial.println("V");
   } else {
+    Serial.print(calculatedChecksum);
     Serial.println("F");
   }
 }
