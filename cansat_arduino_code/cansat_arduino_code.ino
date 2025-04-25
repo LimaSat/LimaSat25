@@ -23,7 +23,7 @@ unsigned long delayTime = 700;
 
 
 // Change this to true if you want to save the data to an SD Card 
-bool sdCard = true;
+bool sdCard = false;
 
 // This is the name of the file that will be created if sdCard = True
 String fileName = "sensores.csv";
