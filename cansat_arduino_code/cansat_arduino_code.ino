@@ -64,7 +64,7 @@ void setup() {
     file = SD.open(fileName, FILE_WRITE);
     // Checks if the file was created and stops the program if not
     if (file) {
-      file.println("Temperature, Pressure, Altitude, UV1, UV2, UV3, UV4, MaxUV, Time"); // Header for the csv file
+      file.println("Temperature, Pressure, Altitude, UV1, UV2, UV3, UV4, MaxUV, Time, Sum, Checksum"); // Header for the csv file
     }
     else {
         Serial.println("no file");
