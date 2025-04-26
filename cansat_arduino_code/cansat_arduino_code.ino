@@ -5,17 +5,12 @@
 #include <SD.h>
 #include <math.h>
 
-
-#define BME_SCK 13
-#define BME_MISO 12
-#define BME_MOSI 11
-#define BME_CS 10
+#define SD_CS 10
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 Adafruit_BME280 bme;
 
-int CS_PIN = 10;
 
 File file;
 
@@ -24,7 +19,7 @@ unsigned long delayTime = 700;
 
 
 // Change this to true if you want to save the data to an SD Card 
-bool sdCard = false;
+bool sdCard = true;
 
 // This is the name of the file that will be created if sdCard = True
 String fileName = "sensores.csv";
@@ -52,13 +47,14 @@ void setup() {
 
   if (sdCard){
     // Initializes the sd card module
-    pinMode(CS_PIN, OUTPUT);
-    SD.begin(CS_PIN);
+    pinMode(SD_CS, OUTPUT);
+    bool sd_status = SD.begin(SD_CS);
     // Checks if the SD card was initialized and stops the program if not
-    if (!SD.begin(CS_PIN)) {
+    if (sd_status==false) {
       Serial.println("SD Card initialization failed!");
-      while(1);
+      sdCard = false;
     }
+    else {
     
     // creates/opens a file in the sd card
     file = SD.open(fileName, FILE_WRITE);
@@ -73,6 +69,7 @@ void setup() {
 
     // Closes the file to prevent data corruption
     file.close();
+    }
   }
 
   // Initializes the BME280 sensor
@@ -81,7 +78,6 @@ void setup() {
 
   if (!status) {
     Serial.println("BME initialization failed, check wiring!");
-    while(1);
   }
 
 }
