@@ -2,6 +2,7 @@
 #include <SPI.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
+#include <Adafruit_BMP280.h>
 #include <SD.h>
 #include <math.h>
 
@@ -10,6 +11,7 @@
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 Adafruit_BME280 bme;
+Adafruit_BMP280 bmp;
 
 
 File file;
@@ -21,11 +23,15 @@ unsigned long delayTime = 700;
 // Change this to true if you want to save the data to an SD Card 
 bool sdCard = true;
 
+// Both should start as false, later in the code only one of them will be changed to know wich sensor is being used
+bool isBME = false;
+bool isBMP = false;
+
 // This is the name of the file that will be created if sdCard = True
 String fileName = "sensores.csv";
 
-
-struct BMEData {
+// Creates a custom struct to save the bme280 or bmp280 data
+struct BMEPData {
   float temperature;
   float pressure;
   float altitude;
@@ -50,47 +56,41 @@ void setup() {
     pinMode(SD_CS, OUTPUT);
     bool sd_status = SD.begin(SD_CS);
     // Checks if the SD card was initialized and stops the program if not
-    if (sd_status==false) {
+    if (!sd_status) {
       Serial.println("SD Card initialization failed!");
       sdCard = false;
     }
     else {
-    
-    // creates/opens a file in the sd card
-    file = SD.open(fileName, FILE_WRITE);
-    // Checks if the file was created and stops the program if not
-    if (file) {
-      file.println("Temperature, Pressure, Altitude, UV1, UV2, UV3, UV4, MaxUV, Time, Sum, Checksum"); // Header for the csv file
-    }
-    else {
-        Serial.println("no file");
-        while(1);
-    }
+      // creates/opens a file in the sd card
+      file = SD.open(fileName, FILE_WRITE);
 
-    // Closes the file to prevent data corruption
-    file.close();
+      // Checks if the file was created
+      if (file) {
+        file.println("Temperature, Pressure, Altitude, UV1, UV2, UV3, UV4, MaxUV, Time, Sum, Checksum"); // Header for the csv file
+      }
+      else {
+          Serial.println("no file");
+      }
+
+      // Closes the file
+      file.close();
     }
   }
 
-  // Initializes the BME280 sensor
-  bool status;
-  status = bme.begin();
-
-  if (!status) {
-    Serial.println("BME initialization failed, check wiring!");
-  }
-
+  // Initializes the BME280 or the BMP280 sensor
+  isBME = bme.begin();
+  isBMP = bmp.begin();
 }
 
 
 void loop() {
   
   // Saves the BME sensor data
-  BMEData bmeData = bmeValues();
+  BMEPData bmepData = bmepValues();
 
-  float temperature = bmeData.temperature;
-  float pressure = bmeData.pressure;
-  float altitude = bmeData.altitude;
+  float temperature = bmepData.temperature;
+  float pressure = bmepData.pressure;
+  float altitude = bmepData.altitude;
 
 
   // Saves the UV sensor data to an array 
@@ -160,12 +160,25 @@ void loop() {
 // End of loop
 
 
-// Returns the values received from the bme280
-BMEData bmeValues() {
-  BMEData data;
-  data.temperature = bme.readTemperature();
-  data.pressure = bme.readPressure() / 100.0F;
-  data.altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+// Returns the values received from the bme280 or the bmp280
+BMEPData bmepValues() {
+  BMEPData data;
+  if (isBME) {
+    data.temperature = bme.readTemperature();
+    data.pressure = bme.readPressure() / 100.0F;
+    data.altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+  }
+  else if (isBMP) {
+    data.temperature = bmp.readTemperature();
+    data.pressure = bmp.readPressure() / 100.0F;
+    data.altitude = bmp.readAltitude(SEALEVELPRESSURE_HPA);
+  }
+  else {
+    data.temperature = NAN;
+    data.pressure = NAN;
+    data.altitude = NAN;
+  }
+  
 
   return data;
 }
