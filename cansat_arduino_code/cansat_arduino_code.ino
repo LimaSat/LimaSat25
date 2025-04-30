@@ -165,12 +165,12 @@ BMEPData bmepValues() {
   BMEPData data;
   if (isBME) {
     data.temperature = bme.readTemperature();
-    data.pressure = bme.readPressure() / 100.0F;
+    data.pressure = (bme.readPressure() / 100.0F) * 100;
     data.altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
   }
   else if (isBMP) {
     data.temperature = bmp.readTemperature();
-    data.pressure = bmp.readPressure() / 100.0F;
+    data.pressure = (bmp.readPressure() / 100.0F) * 100;
     data.altitude = bmp.readAltitude(SEALEVELPRESSURE_HPA);
   }
   else {
