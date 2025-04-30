@@ -8,7 +8,7 @@
 
 #define SD_CS 10
 
-#define SEALEVELPRESSURE_HPA (1013.25)
+#define SEALEVELPRESSURE_HPA (1020.9)
 
 Adafruit_BME280 bme;
 Adafruit_BMP280 bmp;
