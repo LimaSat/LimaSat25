@@ -8,7 +8,7 @@
 
 #define SD_CS 10
 
-#define SEALEVELPRESSURE_HPA (1020.9)
+#define SEALEVELPRESSURE_HPA (1018.7)
 
 Adafruit_BME280 bme;
 Adafruit_BMP280 bmp;
@@ -165,7 +165,7 @@ BMEPData bmepValues() {
   BMEPData data;
   if (isBME) {
     data.temperature = bme.readTemperature();
-    data.pressure = (bme.readPressure() / 100.0F) * 100;
+    data.pressure = (bme.readPressure() / 100.0F) * 100; // pascais!!!
     data.altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
   }
   else if (isBMP) {
