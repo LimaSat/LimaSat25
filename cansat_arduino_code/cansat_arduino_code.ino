@@ -99,6 +99,9 @@ void loop() {
 
   float temperature = bmepData.temperature;
   float pressure = bmepData.pressure;
+
+
+
   float altitude = bmepData.altitude;
 
 
@@ -112,11 +115,9 @@ void loop() {
 
 
   // Chooses the highest value from across the 4 UV sensors and saves it
-  float maxUV = -100;
-  for(int i = 0; i < 4; i++){
-    if (sensorUVdata[i] > maxUV){
-      maxUV = sensorUVdata[i];
-    }
+  float sumUV = 0;
+  for(int i = 0; i < 4; i++){ 
+    sumUV += sensorUVdata[i];
   }
 
   // Time in milliseconds
@@ -125,7 +126,7 @@ void loop() {
 
   // CheckSum
 
-  float data[] = {temperature, pressure, altitude,  sensorUVdata[0], sensorUVdata[1], sensorUVdata[2], sensorUVdata[3], maxUV, time_ms};
+  float data[] = {temperature, pressure, altitude,  sensorUVdata[0], sensorUVdata[1], sensorUVdata[2], sensorUVdata[3], sumUV, time_ms};
   int size = sizeof(data) / sizeof(data[0]);  // Calculate number of elements in the array
 
   float sum = 0;  // Variable to hold the total sum
@@ -146,7 +147,7 @@ void loop() {
   String(sensorUVdata[1]) + "," +
   String(sensorUVdata[2]) + "," +
   String(sensorUVdata[3]) + "," +
-  String(maxUV) + "," +
+  String(sumUV) + "," +
   String(time_ms) + "," +
   String(sum2) + ","+
   String(checksum);
