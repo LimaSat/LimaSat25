@@ -19,6 +19,10 @@ File file;
 //sets the delay on loop
 unsigned long delayTime = 700;
 
+// buzzer
+const int buzzer = 2;
+bool buzzer_timing = true;
+
 
 // Change this to true if you want to save the data to an SD Card 
 bool sdCard = true;
@@ -50,6 +54,9 @@ void setup() {
   pinMode(A1, INPUT);
   pinMode(A2, INPUT);
   pinMode(A3, INPUT);
+
+  // pin buzzer
+  pinMode(buzzer, OUTPUT);
 
   if (sdCard){
     // Initializes the sd card module
@@ -84,6 +91,8 @@ void setup() {
 
 
 void loop() {
+
+  buzzer_sound();
   
   // Saves the BME sensor data
   BMEPData bmepData = bmepValues();
@@ -189,6 +198,17 @@ float uvValues(int pin) {
   float sensorUV = (float)analogRead(pin) * 5000 / 1023.0;
 
   return sensorUV;
+}
+
+void buzzer_sound() {
+  if (buzzer_timing) {
+    buzzer_timing = false;
+    tone(buzzer, 1000);
+  }
+  else {
+    buzzer_timing = true;
+    noTone(buzzer); 
+  }
 }
 
 
