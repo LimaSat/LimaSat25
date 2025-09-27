@@ -73,7 +73,7 @@ void setup() {
 
       // Checks if the file was created
       if (file) {
-        file.println("Temperature, Pressure, Altitude, UV1, UV2, UV3, UV4, MaxUV, Time, Sum, Checksum"); // Header for the csv file
+        file.println("Temperature, Pressure, Altitude, UV1, UV2, UV3, UV4, SumUV, Time, Sum, Checksum"); // Header for the csv file
       }
       else {
           Serial.println("no file");
